@@ -20,7 +20,6 @@ const App = () => {
 			const request = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
 			const response = await request.json();
 			setData(response);
-			console.log(response);
 		};
 		getRequest();
 	}, []);
@@ -33,10 +32,9 @@ const App = () => {
 		} else {
 			nameCurrency = document.getElementById('menu').value;
 		}
-
 		const currentValue = data.Valute[nameCurrency].Value;
 		const valuteName = data.Valute[nameCurrency].Name;
-		const conversion = (valueFromInput / currentValue).toFixed(2);
+		const conversion = Number((valueFromInput / currentValue).toFixed(2)).toLocaleString('ru');
 
 		setPrice(`${conversion} ${valuteName}`);
 	};
@@ -50,12 +48,14 @@ const App = () => {
 					<Col md>
 						<FloatingLabel
 							onChange={(e) => {
-								setValueFromInput(+e.target.value);
-								setPrice();
+								// wokr with integer numbers only
+								e.target.value = e.target.value.replace(/[^\d]/g, '').replace(/\B(?=(?:\d{3})+(?!\d))/g, ' ');
+								setValueFromInput(String(e.target.value).replace(/\s/g, ''));
 							}}
+							onKeyUp={Convert}
 							controlId="floatingInputGrid"
 							label="Write the amount in RUB">
-							<Form.Control type="number" placeholder="Write the amount in RUB" />
+							<Form.Control type="text" placeholder="Write the amount in RUB" />
 						</FloatingLabel>
 					</Col>
 					<Col md>
