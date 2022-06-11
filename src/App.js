@@ -15,22 +15,23 @@ const App = () => {
 		newArr.push(data.Valute[value]);
 	}
 
+	const getRequest = async () => {
+		const request = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
+		const response = await request.json();
+		setData(response);
+	};
+
 	useEffect(() => {
-		const getRequest = async () => {
-			const request = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
-			const response = await request.json();
-			setData(response);
-		};
 		getRequest();
 	}, []);
 
 	const Convert = () => {
+		const menu = document.getElementById('menu').value;
 		let nameCurrency;
-
-		if (document.getElementById('menu').value === 'undefined') {
+		if (!menu) {
 			return;
 		} else {
-			nameCurrency = document.getElementById('menu').value;
+			nameCurrency = menu;
 		}
 		const currentValue = data.Valute[nameCurrency].Value;
 		const valuteName = data.Valute[nameCurrency].Name;
@@ -61,7 +62,7 @@ const App = () => {
 					<Col md>
 						<FloatingLabel controlId="floatingSelectGrid" label="Check the Currency">
 							<Form.Select onChange={Convert} id="menu" aria-label="Check the Currency">
-								<option value={'undefined'}>Open this select menu</option>
+								<option value={''}>Open this select menu</option>
 								{newArr.map(({ CharCode, ID, Name }, i) => {
 									return (
 										<option key={ID} value={CharCode}>
